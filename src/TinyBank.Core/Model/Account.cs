@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TinyBank.Core.Model
 {
@@ -12,10 +13,12 @@ namespace TinyBank.Core.Model
         public Guid CustomerId { get; set; }
         public Customer Customer { get; set; }
         public AuditInfo AuditInfo { get; set; }
+        public List<Card> Cards { get; set; }
 
         public Account()
         {
             AuditInfo = new AuditInfo();
+            Cards = new List<Card>();
         }
     }
 }

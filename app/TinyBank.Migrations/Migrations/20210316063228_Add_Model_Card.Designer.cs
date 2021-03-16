@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TinyBank.Core.Implementation.Data;
 
 namespace TinyBank.Migrations.Migrations
 {
     [DbContext(typeof(TinyBankDbContext))]
-    partial class TinyBankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210316063228_Add_Model_Card")]
+    partial class Add_Model_Card
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +73,7 @@ namespace TinyBank.Migrations.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CardNumber")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CardType")
                         .HasColumnType("int");
@@ -80,10 +82,6 @@ namespace TinyBank.Migrations.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.HasKey("CardId");
-
-                    b.HasIndex("CardNumber")
-                        .IsUnique()
-                        .HasFilter("[CardNumber] IS NOT NULL");
 
                     b.ToTable("Card", "model");
                 });

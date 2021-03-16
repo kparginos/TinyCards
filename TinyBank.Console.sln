@@ -11,17 +11,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D4865F0C-728
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7A244F23-73DF-4247-BA71-85D4B895BC7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.Core", "src\TinyBank.Core\TinyBank.Core.csproj", "{DC0E2F93-7996-4AF7-8CB4-1280B035C25C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyBank.Core", "src\TinyBank.Core\TinyBank.Core.csproj", "{DC0E2F93-7996-4AF7-8CB4-1280B035C25C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.Core.Implementation", "src\TinyBank.Core.Implementation\TinyBank.Core.Implementation.csproj", "{091D1481-12EA-4D65-820D-34AC6518D63C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyBank.Core.Implementation", "src\TinyBank.Core.Implementation\TinyBank.Core.Implementation.csproj", "{091D1481-12EA-4D65-820D-34AC6518D63C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.Migrations", "app\TinyBank.Migrations\TinyBank.Migrations.csproj", "{A18F251B-D267-4E88-8D7C-740CD942512E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyBank.Migrations", "app\TinyBank.Migrations\TinyBank.Migrations.csproj", "{A18F251B-D267-4E88-8D7C-740CD942512E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0520173-7B7C-442D-9B56-329F9FD6136C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyBank.Core.Tests", "tests\TinyBank.Core.Tests\TinyBank.Core.Tests.csproj", "{E50227A0-CC88-4CAD-998F-33A18ED3AB93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{A18F251B-D267-4E88-8D7C-740CD942512E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A18F251B-D267-4E88-8D7C-740CD942512E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A18F251B-D267-4E88-8D7C-740CD942512E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E50227A0-CC88-4CAD-998F-33A18ED3AB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E50227A0-CC88-4CAD-998F-33A18ED3AB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E50227A0-CC88-4CAD-998F-33A18ED3AB93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E50227A0-CC88-4CAD-998F-33A18ED3AB93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{DC0E2F93-7996-4AF7-8CB4-1280B035C25C} = {D4865F0C-728A-48D6-9B74-9E708A132C72}
 		{091D1481-12EA-4D65-820D-34AC6518D63C} = {D4865F0C-728A-48D6-9B74-9E708A132C72}
 		{A18F251B-D267-4E88-8D7C-740CD942512E} = {323763E6-5C63-4839-88C4-0686C41DD1F6}
+		{E50227A0-CC88-4CAD-998F-33A18ED3AB93} = {7A244F23-73DF-4247-BA71-85D4B895BC7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F6BC87C9-0784-44F5-887B-160A76B6D0BB}

@@ -38,6 +38,15 @@ namespace TinyBank.Core.Implementation.Data
 
                     builder.OwnsOne(c => c.AuditInfo);
                 });
+
+            modelBuilder.Entity<Card>(
+                builder => {
+                    builder.ToTable("Card", "model");
+
+                    builder
+                        .HasIndex(c => c.CardNumber)
+                        .IsUnique();
+                });
         }
     }
 }
