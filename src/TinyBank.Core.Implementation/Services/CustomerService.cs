@@ -42,11 +42,6 @@ namespace TinyBank.Core.Implementation.Services
                 return null;
             }
 
-            if (!Constants.Country.SupportedCountryCodes.Contains(
-              options.CountryCode)) {
-                return null;
-            }
-
             if (!IsValidVatNumber(options.CountryCode, options.VatNumber)) {
                 return null;
             }
@@ -68,10 +63,23 @@ namespace TinyBank.Core.Implementation.Services
             return customer;
         }
 
-        private bool IsValidVatNumber(
+        public bool IsValidVatNumber(
             string countryCode, string vatNumber)
         {
-            return !string.IsNullOrWhiteSpace(vatNumber);
+            if (string.IsNullOrWhiteSpace(countryCode)) {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(vatNumber)) {
+                return false;
+            }
+
+            if (!Constants.Country.VatLength.TryGetValue(
+              countryCode, out var vatLength)) {
+                return false;
+            }
+
+            return vatNumber.Length == vatLength;
         }
     }
 }

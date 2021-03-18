@@ -15,5 +15,12 @@ namespace TinyBank.Core.Constants
                 CyprusCountryCode,
                 ItalyCountryCode
             };
+
+        public static readonly IReadOnlyDictionary<string, int> VatLength =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase) {
+                { GreekCountryCode, 9 },
+                { CyprusCountryCode, 11 },
+                { ItalyCountryCode, 10 }
+            };
     }
 }
