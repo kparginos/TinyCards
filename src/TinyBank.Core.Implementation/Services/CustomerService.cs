@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
+using TinyBank.Core.Constants;
 using TinyBank.Core.Implementation.Data;
 using TinyBank.Core.Model;
 using TinyBank.Core.Services;
@@ -24,26 +24,51 @@ namespace TinyBank.Core.Implementation.Services
                 .CreateMapper();
         }
 
-        public Customer Register(RegisterCustomerOptions options)
+        public ApiResult<Customer> Register(RegisterCustomerOptions options)
         {
             if (options == null) {
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Null {nameof(options)}"
+                };
             }
 
             if (string.IsNullOrWhiteSpace(options.Firstname)) {
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Null or empty {nameof(options.Firstname)}"
+                };
             }
 
             if (string.IsNullOrWhiteSpace(options.Lastname)) {
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Null or empty {nameof(options.Lastname)}"
+                };
             }
 
             if (options.Type == Constants.CustomerType.Undefined) {
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Invalid customer type {nameof(options.Type)}"
+                };
             }
 
             if (!IsValidVatNumber(options.CountryCode, options.VatNumber)) {
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Invalid Vat number {options.VatNumber}"
+                };
+            }
+
+            var customerExists = _dbContext.Set<Customer>()
+                .Any(c => c.VatNumber == options.VatNumber);
+
+            if (customerExists) {
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.Conflict,
+                    ErrorText = $"Customer with Vat number {options.VatNumber} already exists"
+                };
             }
 
             var customer = _mapper.Map<Customer>(options);
@@ -57,10 +82,15 @@ namespace TinyBank.Core.Implementation.Services
                 // log
                 Console.WriteLine(ex);
 
-                return null;
+                return new ApiResult<Customer>() {
+                    Code = ApiResultCode.InternalServerError,
+                    ErrorText = $"Customer could not be saved"
+                };
             }
 
-            return customer;
+            return new ApiResult<Customer>() {
+                Data = customer
+            };
         }
 
         public bool IsValidVatNumber(

@@ -10,7 +10,7 @@ namespace TinyBank.Core.Services
 {
     public interface ICustomerService
     {
-        public Customer Register(Options.RegisterCustomerOptions options);
+        public ApiResult<Customer> Register(Options.RegisterCustomerOptions options);
         public bool IsValidVatNumber(string countryCode, string vatNumber);
     }
 }
