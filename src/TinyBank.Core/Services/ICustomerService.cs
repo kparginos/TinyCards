@@ -12,5 +12,10 @@ namespace TinyBank.Core.Services
     {
         public ApiResult<Customer> Register(Options.RegisterCustomerOptions options);
         public bool IsValidVatNumber(string countryCode, string vatNumber);
+        public ApiResult<Customer> Update(
+            Guid customerId, Options.UpdateCustomerOptions options);
+        public ApiResult<Customer> GetById(Guid customerId);
+        public IQueryable<Customer> Search(
+            Options.SearchCustomerOptions options);
     }
 }

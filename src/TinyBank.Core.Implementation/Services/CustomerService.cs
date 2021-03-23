@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 
@@ -61,8 +63,7 @@ namespace TinyBank.Core.Implementation.Services
                 };
             }
 
-            var customerExists = _dbContext.Set<Customer>()
-                .Any(c => c.VatNumber == options.VatNumber);
+            var customerExists = Exists(options.VatNumber);
 
             if (customerExists) {
                 return new ApiResult<Customer>() {
@@ -93,6 +94,44 @@ namespace TinyBank.Core.Implementation.Services
             };
         }
 
+        public ApiResult<Customer> Update(
+            Guid customerId, UpdateCustomerOptions options)
+        {
+            if (options == null) {
+                return new TinyBank.Core.ApiResult<Customer>() {
+                    Code = ApiResultCode.NotFound,
+                    ErrorText = $"Bad request"
+                };
+            }
+
+            var result = GetById(customerId);
+
+            if (!result.IsSuccessful()) {
+                return result;
+            }
+
+            var customer = result.Data;
+
+            if (customer != null) {
+                customer.Firstname = options.Firstname;
+                customer.Lastname = options.Lastname;
+                customer.VatNumber = options.VatNumber;
+                customer.Type = options.Type;
+                customer.CountryCode = options.CountryCode;
+
+                _dbContext.SaveChanges();
+            } else {
+                return new TinyBank.Core.ApiResult<Customer>() {
+                    Code = ApiResultCode.NotFound,
+                    ErrorText = $"Customer not found !"
+                };
+            }
+
+            return new ApiResult<Customer>() {
+                Data = customer
+            };
+        }
+
         public bool IsValidVatNumber(
             string countryCode, string vatNumber)
         {
@@ -110,6 +149,77 @@ namespace TinyBank.Core.Implementation.Services
             }
 
             return vatNumber.Length == vatLength;
+        }
+
+        public ApiResult<Customer> GetById(Guid customerId)
+        {
+            var customer = Search(
+                new SearchCustomerOptions() {
+                    CustomerId = customerId
+                }).SingleOrDefault();
+
+            if (customer == null) {
+                return new ApiResult<Customer>() {
+                    Code = Constants.ApiResultCode.NotFound,
+                    ErrorText = $"Customer {customerId} was not found"
+                };
+            }
+
+            return new ApiResult<Customer>() {
+                Data = customer
+            };
+        }
+
+        public IQueryable<Customer> Search(SearchCustomerOptions options)
+        {
+            if (options == null) {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            // SELECT FROM CUSTOMER
+            var q = _dbContext.Set<Customer>()
+                .AsQueryable();
+
+            // SELECT FROM CUSTOMER WHERE CustomerId = options.CustomerId
+            if (options.CustomerId != null) {
+                q = q.Where(c => c.CustomerId == options.CustomerId);
+            }
+
+            // SELECT FROM CUSTOMER WHERE CustomerId = options.CustomerId
+            // AND VatNumber = options.VatNumber
+            if (!string.IsNullOrWhiteSpace(options.VatNumber)) {
+                q = q.Where(c => c.VatNumber == options.VatNumber);
+            }
+
+            if (options.CountryCodes.Any()) {
+                q = q.Where(c => options.CountryCodes.Contains(
+                    c.CountryCode));
+            }
+
+            if (options.TrackResults != null && 
+              !options.TrackResults.Value) {
+                q = q.AsNoTracking();
+            }
+
+            if (options.Skip != null) {
+                q = q.Skip(options.Skip.Value);
+            }
+            
+            q = q.Take(options.MaxResults ?? 500);
+
+            return q;
+        }
+
+        private bool Exists(string vatNumber)
+        {
+            if (string.IsNullOrWhiteSpace(vatNumber)) {
+                throw new ArgumentNullException(vatNumber);
+            }
+
+            return Search(
+                new SearchCustomerOptions() {
+                    VatNumber = vatNumber
+                }).Any();
         }
     }
 }
