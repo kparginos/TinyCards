@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using TinyBank.Core.Implementation.Data;
 using TinyBank.Core.Implementation.Services;
@@ -21,17 +22,18 @@ namespace TinyBank.Core.Tests
             _customers = new CustomerService(_dbContext);
         }
 
-        [Fact]
-        public Customer RegisterCustomer_Success()
+        [Theory]
+        [InlineData(Constants.Country.GreekCountryCode)]
+        [InlineData(Constants.Country.ItalyCountryCode)]
+        [InlineData(Constants.Country.CyprusCountryCode)]
+        public Customer RegisterCustomer_Success(string countryCode)
         {
-            var vatnumber = $"{DateTimeOffset.Now:ssfffffff}";
-
             var options = new RegisterCustomerOptions() {
-                Firstname = "Dimitris",
-                Lastname = "Pnevmatikos",
+                Firstname = "Georgia",
+                Lastname = "Papadopoulou",
                 Type = Constants.CustomerType.PhysicalEntity,
-                CountryCode = Constants.Country.GreekCountryCode,
-                VatNumber = vatnumber
+                CountryCode = countryCode,
+                VatNumber = GenerateVat(countryCode)
             };
 
             var result = _customers.Register(options);
@@ -52,7 +54,7 @@ namespace TinyBank.Core.Tests
         [Fact]
         public void RegisterCustomer_Fail_Customer_Exists()
         {
-            var customer = RegisterCustomer_Success();
+            var customer = RegisterCustomer_Success(Constants.Country.GreekCountryCode);
             Assert.NotNull(customer);
 
             var options = new RegisterCustomerOptions() {
@@ -97,29 +99,104 @@ namespace TinyBank.Core.Tests
         {
             // success - happy path
             var result = _customers.IsValidVatNumber(
-                Constants.Country.GreekCountryCode, "123456789");
+            Constants.Country.GreekCountryCode, "123456789");
             Assert.True(result);
 
             result = _customers.IsValidVatNumber(
-                Constants.Country.ItalyCountryCode, "1234567891");
+           Constants.Country.ItalyCountryCode, "1234567891");
             Assert.True(result);
 
             result = _customers.IsValidVatNumber(
-                Constants.Country.CyprusCountryCode, "12345678911");
+           Constants.Country.CyprusCountryCode, "12345678911");
             Assert.True(result);
 
             // fail
             result = _customers.IsValidVatNumber(
-                "GB", "123456789");
+            "GB", "123456789");
             Assert.False(result);
 
             result = _customers.IsValidVatNumber(
-                Constants.Country.GreekCountryCode, "         ");
+           Constants.Country.GreekCountryCode, " ");
             Assert.False(result);
 
             result = _customers.IsValidVatNumber(
-                "gR", "123456789");
+           "gR", "123456789");
             Assert.True(result);
+        }
+
+        [Fact]
+        public void SearchVat_Success()
+        {
+            var customer = RegisterCustomer_Success(Constants.Country.GreekCountryCode);
+            Assert.NotNull(customer);
+
+            var options = new SearchCustomerOptions() {
+                VatNumber = customer.VatNumber
+            };
+
+            var result = _customers.Search(options).SingleOrDefault();
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public void SearchCountry_Success()
+        {
+            var customer1 = RegisterCustomer_Success(Constants.Country.GreekCountryCode);
+            Assert.NotNull(customer1);
+
+            var customer2 = RegisterCustomer_Success(Constants.Country.CyprusCountryCode);
+            Assert.NotNull(customer2);
+
+            var options = new SearchCustomerOptions() {
+                CountryCodes = { Constants.Country.GreekCountryCode, Constants.Country.CyprusCountryCode }
+            };
+
+            var result = _customers.Search(options).ToList();
+            Assert.NotNull(result);
+
+            var res1 = result.Where(r => r.CustomerId == customer1.CustomerId)
+           .SingleOrDefault();
+            var res2 = result.Where(r => r.CustomerId == customer2.CustomerId)
+            .SingleOrDefault();
+
+            Assert.NotNull(res1);
+            Assert.NotNull(res2);
+        }
+
+        [Fact]
+        public void Test_GenerateVat()
+        {
+            var grVat = GenerateVat(Constants.Country.GreekCountryCode);
+            var valid = _customers.IsValidVatNumber(
+                Constants.Country.GreekCountryCode, grVat);
+            Assert.True(valid);
+
+            var itVat = GenerateVat(Constants.Country.ItalyCountryCode);
+            valid = _customers.IsValidVatNumber(
+                Constants.Country.ItalyCountryCode, itVat);
+            Assert.True(valid);
+
+            var cyVat = GenerateVat(Constants.Country.CyprusCountryCode);
+            valid = _customers.IsValidVatNumber(
+                Constants.Country.CyprusCountryCode, cyVat);
+            Assert.True(valid);
+        }
+
+        private string GenerateVat(string countryCode)
+        {
+            switch (countryCode) {
+                case Constants.Country.GreekCountryCode:
+                    return $"{DateTimeOffset.Now:ssfffffff}";
+
+                case Constants.Country.ItalyCountryCode:
+                    return $"{DateTimeOffset.Now:mmssffffff}";
+
+                case Constants.Country.CyprusCountryCode:
+                    return $"{DateTimeOffset.Now:mmssfffffff}";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
