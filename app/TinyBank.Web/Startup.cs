@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,6 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using TinyBank.Core.Config;
+using TinyBank.Core.Implementation.Config;
+using TinyBank.Core.Implementation.Data;
+using TinyBank.Core.Implementation.Services;
+using TinyBank.Core.Services;
 
 namespace TinyBank.Web
 {
@@ -24,7 +31,22 @@ namespace TinyBank.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.ReadAppConfiguration();
+
             services.AddControllersWithViews();
+
+            services.AddSingleton(appConfig);
+
+            services.AddDbContext<TinyBankDbContext>(
+                (serviceProvider, builder) => {
+                    var connString = serviceProvider
+                        .GetRequiredService<AppConfig>()
+                        .DatabaseConnectionString;
+
+                    builder.UseSqlServer(connString);
+                });
+
+            services.AddScoped<ICustomerService, CustomerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,4 +74,5 @@ namespace TinyBank.Web
             });
         }
     }
+
 }

@@ -2,11 +2,8 @@
 using Microsoft.Extensions.Configuration;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using TinyBank.Core.Implementation.Config;
 using TinyBank.Core.Implementation.Data;
 
 namespace TinyBank.Core.Tests
@@ -22,10 +19,10 @@ namespace TinyBank.Core.Tests
                 .AddJsonFile("appsettings.json", false)
                 .Build();
 
-            var connectionString = config.GetConnectionString("tinyBank");
+            var appConfig = config.ReadAppConfiguration();
 
             var builder = new DbContextOptionsBuilder();
-            builder.UseSqlServer(connectionString);
+            builder.UseSqlServer(appConfig.DatabaseConnectionString);
 
             DbContext = new TinyBankDbContext(builder.Options);
         }

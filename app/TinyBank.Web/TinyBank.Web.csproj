@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TinyBank.Core.Implementation\TinyBank.Core.Implementation.csproj" />
+  </ItemGroup>
+
 </Project>
