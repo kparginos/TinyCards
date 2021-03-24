@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-using TinyBank.Api.Models;
+using TinyBank.Web.Models;
 
-namespace TinyBank.Api.Controllers
+namespace TinyBank.Web.Controllers
 {
     public class HomeController : Controller
     {

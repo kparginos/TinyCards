@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TinyBank.Api
+namespace TinyBank.Web
 {
     public class Program
     {
