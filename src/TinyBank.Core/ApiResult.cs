@@ -21,5 +21,29 @@ namespace TinyBank.Core
         {
             return Code == Constants.ApiResultCode.Success;
         }
+
+        public ApiResult<Y> ToResult<Y>()
+        {
+            return new ApiResult<Y>() {
+                Code = Code,
+                ErrorText = ErrorText
+            };
+        }
+
+        public static ApiResult<T> CreateSuccessful(T data)
+        {
+            return new ApiResult<T>() {
+                Data = data
+            };
+        }
+
+        public static ApiResult<T> CreateFailed(
+            int code, string errorText)
+        {
+            return new ApiResult<T>() {
+                Code = code,
+                ErrorText = errorText
+            };
+        }
     }
 }

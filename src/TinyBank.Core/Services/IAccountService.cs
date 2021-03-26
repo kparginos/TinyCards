@@ -11,6 +11,6 @@ namespace TinyBank.Core.Services
     public interface IAccountService
     {
         public ApiResult<Account> Create(Guid customerId,
-            CreateAccountOptions options);
+            Options.CreateAccountOptions options);
     }
 }
