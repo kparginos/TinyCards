@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using System;
 
-using TinyBank.Core.Implementation.Config;
 using TinyBank.Core.Implementation.Data;
 
 namespace TinyBank.Core.Tests
@@ -11,6 +10,7 @@ namespace TinyBank.Core.Tests
     public class TinyBankFixture : IDisposable
     {
         public TinyBankDbContext DbContext { get; private set; }
+        public IServiceScope Scope { get; private set; }
 
         public TinyBankFixture()
         {
@@ -19,17 +19,21 @@ namespace TinyBank.Core.Tests
                 .AddJsonFile("appsettings.json", false)
                 .Build();
 
-            var appConfig = config.ReadAppConfiguration();
+            IServiceCollection services = new ServiceCollection();
+            services.AddAppServices(config);
 
-            var builder = new DbContextOptionsBuilder();
-            builder.UseSqlServer(appConfig.DatabaseConnectionString);
-
-            DbContext = new TinyBankDbContext(builder.Options);
+            Scope = services.BuildServiceProvider().CreateScope();
+            DbContext = GetService<TinyBankDbContext>();
         }
 
         public void Dispose()
         {
-            DbContext?.Dispose();
+            Scope.Dispose();
+        }
+
+        public T GetService<T>()
+        {
+            return Scope.ServiceProvider.GetRequiredService<T>();
         }
     }
 }

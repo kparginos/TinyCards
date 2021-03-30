@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TinyBank.Core.Implementation.Data;
-using TinyBank.Core.Implementation.Services;
-using TinyBank.Core.Services;
+﻿using TinyBank.Core.Services;
 using TinyBank.Core.Services.Options;
 
 using Xunit;
@@ -15,16 +7,12 @@ namespace TinyBank.Core.Tests
 {
     public class AccountServiceTests : IClassFixture<TinyBankFixture>
     {
-        private readonly TinyBankDbContext _dbContext;
         private readonly IAccountService _accounts;
         private readonly CustomerServiceTests _customerTests;
 
         public AccountServiceTests(TinyBankFixture fixture)
         {
-            _dbContext = fixture.DbContext;
-
-            _accounts = new AccountService(new CustomerService(_dbContext), _dbContext);
-
+            _accounts = fixture.GetService<IAccountService>();
             _customerTests = new CustomerServiceTests(fixture);
         }
 
