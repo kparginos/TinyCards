@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using System;
@@ -7,6 +8,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+using TinyBank.Core.Implementation.Data;
+using TinyBank.Core.Model;
 using TinyBank.Core.Services;
 using TinyBank.Web.Models;
 
@@ -16,24 +19,33 @@ namespace TinyBank.Web.Controllers
     {
         private readonly ICustomerService _customers;
         private readonly ILogger<HomeController> _logger;
+        private readonly TinyBankDbContext _dbContext;
 
         public HomeController(
+            TinyBankDbContext dbContext,
             ILogger<HomeController> logger,
             ICustomerService customers)
         {
             _logger = logger;
             _customers = customers;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
-            //return View();
-            var customers = _customers.Search(
-                new Core.Services.Options.SearchCustomerOptions() {
-                    MaxResults = 10
-                }).ToList();
+            var accounts = _dbContext.Set<Account>()
+                .Include(a => a.Customer)
+                .Select(a => new {
+                    AccountId = a.AccountId,
+                    Description = a.Description,
+                    Customer = new {
+                        FirstName = a.Customer.Firstname,
+                        LastName = a.Customer.Lastname
+                    }
+                })
+                .ToList();
 
-            return Json(customers);
+            return Json(accounts);
         }
 
         public IActionResult Privacy()

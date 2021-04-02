@@ -34,13 +34,32 @@ namespace TinyBank.Web.Controllers
             _dbContext = dbContext;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var customers = _customers.Search(
+                new SearchCustomerOptions() {
+                    MaxResults = 100
+                })
+                .OrderByDescending(c => c.AuditInfo.Created)
+                .ToList();
+
+            return View(customers);
+        }
+
         [HttpGet("{id:guid}")]
         public IActionResult Get(Guid id)
         {
-            return Ok(new {
+            return Json(new {
                 id,
                 endpoint = "get"
             });
+        }
+
+        [HttpGet("{id:guid}/accounts")]
+        public IActionResult Accounts(Guid id)
+        {
+            return Ok();
         }
 
         [HttpPost]

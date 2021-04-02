@@ -1,0 +1,32 @@
+﻿@model List<TinyBank.Core.Model.Customer>
+ 
+@{
+    ViewData["Title"] = "Customers list";
+}
+
+@foreach (var customer in Model) {
+    <p> @customer.VatNumber </p>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Customers list</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Vat number</th>
+                <th scope="col">Firstname</th>
+                <th scope="col">Lastname</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <th>123456789</th>
+                <td>Dimitris</td>
+                <td>Pnevmatikos</td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
