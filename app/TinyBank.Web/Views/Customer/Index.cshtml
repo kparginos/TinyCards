@@ -7,7 +7,7 @@
 <div class="text-center">
     <h1 class="display-4">Customers list</h1>
 
-    <table class="table">
+    <table class="table js-customers-list">
         <thead>
             <tr>
                 <th scope="col">Vat number</th>
@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             @foreach (var customer in Model) {
-                <tr>
+                <tr id="@customer.CustomerId">
                     <th>
                         @Html.ActionLink(
                             customer.VatNumber,
