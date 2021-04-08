@@ -156,7 +156,9 @@ namespace TinyBank.Core.Implementation.Services
             var customer = Search(
                 new SearchCustomerOptions() {
                     CustomerId = customerId
-                }).SingleOrDefault();
+                })
+                .Include(c => c.Accounts)
+                .SingleOrDefault();
 
             if (customer == null) {
                 return new ApiResult<Customer>() {

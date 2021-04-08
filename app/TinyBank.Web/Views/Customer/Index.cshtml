@@ -4,10 +4,6 @@
     ViewData["Title"] = "Customers list";
 }
 
-@foreach (var customer in Model) {
-    <p> @customer.VatNumber </p>
-}
-
 <div class="text-center">
     <h1 class="display-4">Customers list</h1>
 
@@ -20,13 +16,19 @@
             </tr>
         </thead>
         <tbody>
-
-            <tr>
-                <th>123456789</th>
-                <td>Dimitris</td>
-                <td>Pnevmatikos</td>
-            </tr>
-
+            @foreach (var customer in Model) {
+                <tr>
+                    <th>
+                        @Html.ActionLink(
+                            customer.VatNumber,
+                            "Detail", "Customer",
+                            new { id = customer.CustomerId }
+                       )
+                    </th>
+                    <td>@customer.Firstname</td>
+                    <td>@customer.Lastname</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

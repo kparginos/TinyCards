@@ -48,12 +48,19 @@ namespace TinyBank.Web.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult Get(Guid id)
+        public IActionResult Detail(Guid id)
         {
-            return Json(new {
-                id,
-                endpoint = "get"
-            });
+            var result = _customers.GetById(id);
+
+            if (!result.IsSuccessful()) {
+                var obJResult = new ObjectResult(result.ErrorText) {
+                    StatusCode = result.Code
+                };
+
+                return obJResult;
+            }
+
+            return View(result.Data);
         }
 
         [HttpGet("{id:guid}/accounts")]
