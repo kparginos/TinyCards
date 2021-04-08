@@ -12,6 +12,7 @@ using TinyBank.Core.Implementation.Data;
 using TinyBank.Core.Model;
 using TinyBank.Core.Services;
 using TinyBank.Core.Services.Options;
+using TinyBank.Web.Extensions;
 using TinyBank.Web.Models;
 
 namespace TinyBank.Web.Controllers
@@ -53,11 +54,7 @@ namespace TinyBank.Web.Controllers
             var result = _customers.GetById(id);
 
             if (!result.IsSuccessful()) {
-                var obJResult = new ObjectResult(result.ErrorText) {
-                    StatusCode = result.Code
-                };
-
-                return obJResult;
+                return result.ToActionResult();
             }
 
             return View(result.Data);
