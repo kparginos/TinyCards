@@ -193,6 +193,14 @@ namespace TinyBank.Core.Implementation.Services
                 q = q.Where(c => c.VatNumber == options.VatNumber);
             }
 
+            if (!string.IsNullOrWhiteSpace(options.Firstname)) {
+                q = q.Where(c => c.Firstname == options.Firstname);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Lastname)) {
+                q = q.Where(c => c.Lastname == options.Lastname);
+            }
+
             if (options.CountryCodes.Any()) {
                 q = q.Where(c => options.CountryCodes.Contains(
                     c.CountryCode));

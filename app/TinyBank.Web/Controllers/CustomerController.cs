@@ -36,16 +36,20 @@ namespace TinyBank.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(SearchCustomerOptions options)
         {
-            var customers = _customers.Search(
-                new SearchCustomerOptions() {
-                    MaxResults = 100
-                })
+            options = options ?? new SearchCustomerOptions();
+            options.MaxResults = 100;
+
+            var customers = _customers.Search(options)
                 .OrderByDescending(c => c.AuditInfo.Created)
                 .ToList();
 
-            return View(customers);
+            return View(
+                new SearchCustomersViewModel() {
+                    Customers = customers,
+                    SearchOptions = options
+                });
         }
 
         [HttpGet("{id:guid}")]
