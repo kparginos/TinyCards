@@ -1,0 +1,128 @@
+﻿@model TinyBank.Core.Model.Customer
+
+@{
+    ViewData["Title"] = "Customer Detail";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.Firstname @Model.Lastname</h1>
+</div>
+
+<div>
+    <form>
+        <input class="js-customer-id" type="hidden" value="@Model.CustomerId" />
+        <div class="form-group">
+            <label>Vat number</label>
+            <input class="form-control" value="@Model.VatNumber">
+        </div>
+
+        <div class="form-group">
+            <label>First name</label>
+            <input class="form-control js-first-name" value="@Model.Firstname">
+        </div>
+
+        <div class="form-group">
+            <label>Last name</label>
+            <input class="form-control js-last-name" value="@Model.Lastname">
+        </div>
+
+        <div class="form-group">
+            <label>Registered</label>
+            <input class="form-control"
+                   value="@Model.AuditInfo.Created.ToString("dd/MM/yyyy")">
+        </div>
+    </form>
+
+    <table class="table accounts-table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">IBAN</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.Accounts)
+            {
+                <tr>
+                    <td class="js-image">
+                        @{
+                            switch (account.State)
+                            {
+                                case TinyBank.Core.Constants.AccountState.Active:
+                                    <img class="js-state-image" src="~/Images/Active-Icon.bmp" />
+                                    break;
+                                case TinyBank.Core.Constants.AccountState.Inactive:
+                                    <img class="js-state-image" src="~/Images/Inactive-Icon.bmp" />
+                                    break;
+                                case TinyBank.Core.Constants.AccountState.Suspended:
+                                    <img class="js-state-image" src="~/Images/Suspended-Icon.bmp" />
+                                    break;
+                            };
+                        }
+                    </td>
+                    <td class="js-account-name">@account.AccountId</td>
+                    <td class="js-balance">@account.Balance</td>
+                    <td class="js-audit-created">@account.AuditInfo.Created.ToString("dd/MM/yyyy")</td>
+                    <td hidden class="js-account-state">@account.State</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Use this to add the form for account state selector -->
+    <div class="js-account-state-selector" role="alert"></div>
+    <div class="js-result"></div>
+
+    <div class="text-center">
+        <button type="button" class="btn btn-primary js-update-customer">
+            Update
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Account Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="js-account-details">
+                    <label>IBAN:</label>
+                    <span class="js-view-account-id">Some Account... </span><br />
+                    <label>Balance:</label>
+                    <span class="js-view-account-balance">Some Balance...</span><br />
+                    <label>Created:</label>
+                    <span class="js-view-account-created">Some Date...</span><br />
+                    <label>Current State:</label>
+                    <span class="js-view-account-state">Some State...</span><br />
+                    <!--use bootstrap dropdown class-->
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle js-account-state-button-selector" 
+                                type="button" id="dropdownMenuButton" 
+                                data-toggle="dropdown" 
+                                aria-haspopup="true" 
+                                aria-expanded="false">
+                            Select Account State
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item js-account-state-selector" data-account-state="1">Active</a>
+                            <a class="dropdown-item js-account-state-selector" data-account-state="2">Inactive</a>
+                            <a class="dropdown-item js-account-state-selector" data-account-state="3">Suspended</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary js-update-account-state" data-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

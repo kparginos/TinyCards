@@ -156,7 +156,9 @@ namespace TinyBank.Core.Implementation.Services
             var customer = Search(
                 new SearchCustomerOptions() {
                     CustomerId = customerId
-                }).SingleOrDefault();
+                })
+                .Include(c => c.Accounts)
+                .SingleOrDefault();
 
             if (customer == null) {
                 return new ApiResult<Customer>() {
@@ -189,6 +191,14 @@ namespace TinyBank.Core.Implementation.Services
             // AND VatNumber = options.VatNumber
             if (!string.IsNullOrWhiteSpace(options.VatNumber)) {
                 q = q.Where(c => c.VatNumber == options.VatNumber);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Firstname)) {
+                q = q.Where(c => c.Firstname == options.Firstname);
+            }
+
+            if (!string.IsNullOrWhiteSpace(options.Lastname)) {
+                q = q.Where(c => c.Lastname == options.Lastname);
             }
 
             if (options.CountryCodes.Any()) {

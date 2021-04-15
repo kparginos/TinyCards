@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using TinyBank.Core.Implementation.Data;
-using TinyBank.Core.Implementation.Services;
 using TinyBank.Core.Model;
 using TinyBank.Core.Services;
 using TinyBank.Core.Services.Options;
@@ -13,13 +11,11 @@ namespace TinyBank.Core.Tests
 {
     public class CustomerServiceTests : IClassFixture<TinyBankFixture>
     {
-        private readonly TinyBankDbContext _dbContext;
         private readonly ICustomerService _customers;
 
         public CustomerServiceTests(TinyBankFixture fixture)
         {
-            _dbContext = fixture.DbContext;
-            _customers = new CustomerService(_dbContext);
+            _customers = fixture.GetService<ICustomerService>();
         }
 
         [Theory]
