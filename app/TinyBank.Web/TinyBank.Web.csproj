@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\Clear-Green-Button.ico\**" />
+    <Content Remove="wwwroot\Clear-Green-Button.ico\**" />
+    <EmbeddedResource Remove="wwwroot\Clear-Green-Button.ico\**" />
+    <None Remove="wwwroot\Clear-Green-Button.ico\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.4" />
   </ItemGroup>
 

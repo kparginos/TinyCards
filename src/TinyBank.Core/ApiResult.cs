@@ -45,5 +45,14 @@ namespace TinyBank.Core
                 ErrorText = errorText
             };
         }
+
+        public static ApiResult<T> UpdateFailed(
+            int code, string errorText)
+        {
+            return new ApiResult<T>() {
+                Code = code,
+                ErrorText = errorText
+            };
+        }
     }
 }

@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using TinyBank.Core.Constants;
 using TinyBank.Core.Model;
 using TinyBank.Core.Services;
 using TinyBank.Core.Services.Options;
@@ -21,7 +22,7 @@ namespace TinyBank.Core.Implementation.Services
         {
             _customers = customers;
             _dbContext = dbContext;
-        } 
+        }
 
         public ApiResult<Account> Create(Guid customerId,
             CreateAccountOptions options)
@@ -60,12 +61,109 @@ namespace TinyBank.Core.Implementation.Services
 
             try {
                 _dbContext.SaveChanges();
-            } catch (Exception) {
+            }
+            catch (Exception) {
                 return ApiResult<Account>.CreateFailed(
                     Constants.ApiResultCode.InternalServerError, "Could not save account");
             }
 
             return ApiResult<Account>.CreateSuccessful(account);
+        }
+
+        public ApiResult<Account> Update(string accountId, UpdateAccountOptions options)
+        {
+            if (string.IsNullOrWhiteSpace(accountId)) {
+                return ApiResult<Account>.UpdateFailed(
+                    Constants.ApiResultCode.BadRequest, "Account ID cannot be empty");
+            }
+
+            if (options == null) {
+                return ApiResult<Account>.UpdateFailed(
+                                    Constants.ApiResultCode.BadRequest, $"NULL {nameof(options)}");
+            }
+
+            var result = GetById(accountId);
+
+            if (!result.IsSuccessful()) {
+                return result;
+            }
+
+            var account = result.Data;
+
+            if (account != null) {
+                account.Balance = options.Balance ?? account.Balance;
+                account.CurrencyCode = options.CurrencyCode ?? account.CurrencyCode;
+                account.Description = options.Description ?? account.Description;
+                account.State = options.State;
+
+                _dbContext.SaveChanges();
+            }
+            else {
+                return new TinyBank.Core.ApiResult<Account>() {
+                    Code = ApiResultCode.NotFound,
+                    ErrorText = $"Account not found !"
+                };
+            }
+
+            return new ApiResult<Account>() {
+                Data = account
+            };
+        }
+
+        public ApiResult<Account> GetById(string accountId)
+        {
+            var account = Search(
+                new SearchAccountOptions() {
+                    AccountId = accountId
+                })
+                .SingleOrDefault();
+
+            if (account == null) {
+                return new ApiResult<Account>() {
+                    Code = Constants.ApiResultCode.NotFound,
+                    ErrorText = $"Account {accountId} was not found"
+                };
+            }
+
+            return new ApiResult<Account>() {
+                Data = account
+            };
+        }
+
+        public IQueryable<Account> Search(SearchAccountOptions options)
+        {
+            if (options == null) {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            // SELECT FROM CUSTOMER
+            var q = _dbContext.Set<Account>()
+                .AsQueryable();
+
+            // SELECT FROM CUSTOMER WHERE CustomerId = options.CustomerId
+            if (!string.IsNullOrWhiteSpace(options.AccountId)) {
+                q = q.Where(a => a.AccountId == options.AccountId);
+            }
+
+            // SELECT FROM CUSTOMER WHERE CustomerId = options.CustomerId
+            // AND VatNumber = options.VatNumber
+            if (options.CustomerId != Guid.Parse("00000000-0000-0000-0000-000000000000")) {
+                q = q.Where(a => a.CustomerId == options.CustomerId);
+            }
+
+
+            if (options.TrackResults != null &&
+              !options.TrackResults.Value) {
+                q = q.AsNoTracking();
+            }
+
+            if (options.Skip != null) {
+                q = q.Skip(options.Skip.Value);
+            }
+
+            q = q.Take(options.MaxResults ?? 500);
+
+            return q;
         }
 
         private string CreateAccountId(string countryCode)
