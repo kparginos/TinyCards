@@ -116,6 +116,8 @@ namespace TinyBank.Core.Implementation.Services
                 new SearchAccountOptions() {
                     AccountId = accountId
                 })
+                .Include(ca => ca.Cards)
+                .Include(c => c.Customer)
                 .SingleOrDefault();
 
             if (account == null) {
