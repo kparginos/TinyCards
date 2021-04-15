@@ -103,17 +103,15 @@ $('.js-update-account-state').on('click',
             // show an alert
             $('.js-result').empty();
             $('.js-result')
-                .append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+                .append(`<div class="alert alert-success alert-dismissible show" role="alert" >
                               Account State updated successfully
-                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
                               </button>
                             </div>`);
-
+            $('.js-result').fadeOut(5000);
             //debugger;
             // try to refresh icon
-            debugger;
-            $('.js-state-image').attr("src", `"/Images/${stateIcons[itemVal]}"`);
+            //debugger;
+            //$('.js-state-image').attr("src", `"/Images/${stateIcons[itemVal]}"`);
         }).fail(failure => {
             // failure
             //console.log('Update failed');
