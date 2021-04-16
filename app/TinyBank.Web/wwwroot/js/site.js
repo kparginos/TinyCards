@@ -125,3 +125,17 @@ $('.js-update-account-state').on('click',
                             </div>`);
         });
     });
+
+$('.js-pay-card').on('click',
+    (event) => {
+        let data = JSON.stringify({
+            CardNumber: $('.js-cardnumber').val(),
+            ExpirationMonth: parseInt($('.js-expmonth').val()),
+            ExpirationYear: parseInt($('.js-expyear').val()),
+            Amount: parseFloat($('.js-amount').val())
+        });
+
+        alert(data);
+
+        // ajax call
+    });
