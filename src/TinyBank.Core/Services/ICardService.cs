@@ -9,6 +9,7 @@ namespace TinyBank.Core.Services
     {
         public ApiResult<Card> Register(CreateCardOptions options);
         public ApiResult<Card> BindCardToAccount(string cardNumber, string accontNumber);
+        public ApiResult<Card> Checkout(SearchCardCheckoutOption options);
         public ApiResult<Card> GetCardbyNumber(string cardNumber);
         public IQueryable<Card> Search(SearchCardOption options);
     }

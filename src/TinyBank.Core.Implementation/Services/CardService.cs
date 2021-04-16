@@ -70,6 +70,64 @@ namespace TinyBank.Core.Implementation.Services
             };
         }
 
+        public ApiResult<Card> Checkout(SearchCardCheckoutOption options)
+        {
+            if(options == null) {
+                return ApiResult<Card>.UpdateFailed(
+                    code: ApiResultCode.BadRequest,
+                    errorText: "No valid checkout card info");
+            }
+
+            // 1. card exists
+            var cardResult = GetCardbyNumber(options.CardNumber);
+            if (!cardResult.IsSuccessful()) {
+                return ApiResult<Card>.UpdateFailed(
+                    code: cardResult.Code,
+                    errorText: cardResult.ErrorText);
+            }
+            var card = cardResult.Data; // get ref to card
+
+            // 2. Expiration
+            if(card.Expiration.ToString("MMyyyy") != $"{options.ExpirationMonth.ToString("00")}{options.ExpirationYear.ToString("0000")}") {
+                return new ApiResult<Card>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Card expiration {card.Expiration} not much request info"
+                };
+            }
+
+            // 3. Card Active
+            if (!card.Active) {
+                return new ApiResult<Card>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Card {card.CardNumber} is inactive"
+                };
+            }
+
+            // 4. Account has balance. For simplicity use only the first account
+            if(card.Accounts.Count == 0) {
+                return new ApiResult<Card>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Card {card.CardNumber} has no related Accounts"
+                };
+            }
+            var account = card.Accounts[0];
+            if(account.Balance < options.Amount) {
+                return new ApiResult<Card>() {
+                    Code = ApiResultCode.BadRequest,
+                    ErrorText = $"Not enough balance in your Account"
+                };
+            }
+
+            account.Balance -= options.Amount;
+
+            _dbContext.Update(account);
+            _dbContext.SaveChanges();
+
+            return new ApiResult<Card>() {
+                Data = card
+            };
+        }
+
         public ApiResult<Card> GetCardbyNumber(string cardNumber)
         {
             if (string.IsNullOrWhiteSpace(cardNumber)) {

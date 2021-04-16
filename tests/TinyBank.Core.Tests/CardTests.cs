@@ -5,6 +5,7 @@ using TinyBank.Core.Constants;
 using TinyBank.Core.Implementation.Data;
 using TinyBank.Core.Model;
 using TinyBank.Core.Services;
+using TinyBank.Core.Services.Options;
 using Xunit;
 
 namespace TinyBank.Core.Tests
@@ -129,7 +130,7 @@ namespace TinyBank.Core.Tests
         }
 
         [Theory]
-        [InlineData("3311731166885096", "GR123456789121")]
+        [InlineData("3311731166885096", "CY00000000001035628576")]
         public void Register_Existing_Card_To_Existing_Account_Using_The_Card_Service_Method_Success(string cardNumber, string accountNumber)
         {
             // get ref to card
@@ -137,6 +138,19 @@ namespace TinyBank.Core.Tests
             Assert.Equal(ApiResultCode.Success, result.Code);
         }
 
+        [Fact]
+        public void Check_Card_Success()
+        {
+            SearchCardCheckoutOption option = new SearchCardCheckoutOption {
+                Amount = 20,
+                CardNumber = "7229291478892443",
+                ExpirationMonth = 04,
+                ExpirationYear = 2027
+            };
+
+            var cardResult = _cards.Checkout(option);
+            Assert.Equal(ApiResultCode.Success, cardResult.Code);
+        }
         private string GenerateCardNumber()
         {
             var cardNumber = "";

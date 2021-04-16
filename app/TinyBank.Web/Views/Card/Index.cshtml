@@ -1,0 +1,41 @@
+﻿@model TinyBank.Core.Services.Options.SearchCardCheckoutOption
+@{
+    ViewData["Title"] = "Card Details";
+}
+<div class="text-center">
+    <h1 class="display-4">Card Details</h1>
+</div>
+
+<div class="search-form">
+
+    <form action="/customer" method="get">
+        <div>
+            <label>Card Number:</label>
+            <input class="form-control js-cardnumber"
+                   name="cardNumber"
+                   value="" />
+        </div>
+        <div>
+            <label>Expiration Month:</label>
+            <input class="form-control js-expmonth"
+                   name="expMonth"
+                   value="" />
+        </div>
+        <div>
+            <label>Expiration Year:</label>
+            <input class="form-control js-expyear"
+                   name="expYear"
+                   value="" />
+        </div>
+        <div>
+            <label>Amount:</label>
+            <input class="form-control js-amount"
+                   name="amount"
+                   value="" />
+        </div>
+        <button type="button" class="btn btn-primary js-pay-card">
+            Pay
+        </button>
+    </form>
+
+</div>
