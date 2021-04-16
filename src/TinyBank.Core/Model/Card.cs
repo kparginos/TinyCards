@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace TinyBank.Core.Model
 {
@@ -10,6 +11,7 @@ namespace TinyBank.Core.Model
         public DateTimeOffset Expiration { get; set; }
         public bool Active { get; set; }
         public Constants.CardType CardType { get; set; }
+        [JsonIgnore]
         public List<Account> Accounts { get; set; }
 
         public Card()

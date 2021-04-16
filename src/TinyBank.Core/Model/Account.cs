@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace TinyBank.Core.Model
 {
@@ -11,6 +12,7 @@ namespace TinyBank.Core.Model
         public decimal? Balance { get; set; }
         public Constants.AccountState State { get; set; }
         public Guid CustomerId { get; set; }
+        [JsonIgnore]
         public Customer Customer { get; set; }
         public AuditInfo AuditInfo { get; set; }
         public List<Card> Cards { get; set; }
