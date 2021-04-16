@@ -30,5 +30,13 @@ namespace TinyBank.Web.Controllers
 
             return Ok();
         }
+
+        [HttpGet("{accountId}")]
+        public IActionResult Index(string accountId)
+        {
+            var result = _account.GetById(accountId);
+
+            return Json(result);
+        }
     }
 }
