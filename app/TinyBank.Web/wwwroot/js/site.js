@@ -12,6 +12,51 @@ let stateIcons =
 let itemVal = '';
 let iban = '';
 
+$(document).ready(function () {
+    $('.js-back').hide();
+
+    $(".js-expmonth").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errmsgMonth").html("Digits Only").show().fadeOut(2000);
+            return false;
+        }
+    });
+    $(".js-expmonth").on("change", function () {
+        var val = parseInt(this.value);
+        if (val > 12 || val < 1) {
+            $("#errmsgMonth").html("Accepted values 1-12").show().fadeOut(2000);
+            this.value = '';
+            return false;
+        }
+    });
+
+    $(".js-expyear").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errmsgYear").html("Digits Only").show().fadeOut(2000);
+            return false;
+        }
+    });
+    $(".js-expyear").on("change", function () {
+        if ($(this).val().length != 4) {
+            $("#errmsgYear").html("Year must have a size of 4 digits").show().fadeOut(2000);
+            this.value = '';
+            return false;
+        }
+    });
+
+    $('.js-amount').on('change', function () {
+        if (!$.isNumeric($(this).val())) {
+            $("#errmsgAmount").html('Amount must be a number').show().fadeOut(2000);
+            this.value = '';
+            return false;
+        }
+    });
+});
+
 $('.js-update-customer').on('click',
     (event) => {
         debugger;
@@ -137,7 +182,8 @@ $('.js-pay-card').on('click',
         });
 
         // lock the form
-        $('.js-card-form').prop("disabled", true);
+        $('.js-card-form :input').prop("disabled", true);
+        $('.js-back').show();
 
         // ajax call
         $.ajax({
@@ -147,33 +193,31 @@ $('.js-pay-card').on('click',
             data: data
         }).done(response => {
             // success
-            // show an alert
+            $('.js-back').hide();
             $('.js-card-form').toggle();
             console.log("Payment Successfull");
             $('.js-result').empty();
             $('.js-result')
                 .append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
                               <h4 class="alert-heading">You payment was successfull!</h4>
-                              <hr>
-                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>`);
         }).fail(failure => {
             // failure
-            //debugger;
             $('.js-card-form').toggle();
-            console.log('Payment failed');
-            console.log(failure.responseText);
             $('.js-result').empty();
             $('.js-result')
                 .append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
                               <h4 class="alert-heading">Your payment failed!</h4>
                               <hr>
                               ${failure.status} - ${failure.responseText}
-                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
                             </div>`);
+            $('.js-card-form :input').prop("disabled", false);
         });
+    });
+
+$('.js-back').on('click',
+    (event) => {
+        $('.js-result').empty();
+        $('.js-back').hide();
+        $('.js-card-form').toggle();
     });

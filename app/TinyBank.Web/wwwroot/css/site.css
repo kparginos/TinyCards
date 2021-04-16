@@ -73,3 +73,15 @@ body {
 table {
     margin-top: 60px;
 }
+
+#errmsgMonth {
+    color: red;
+}
+
+#errmsgYear {
+    color: red;
+}
+
+#errmsgAmount {
+    color: red;
+}

@@ -10,7 +10,7 @@
 
 <div class="js-card-form">
 
-    <form action="/card" method="get">
+    <form class="js-card-form" action="/card" method="get">
         <div>
             <label>Card Number:</label>
             <input class="form-control js-cardnumber"
@@ -21,19 +21,21 @@
             <label>Expiration Month:</label>
             <input class="form-control js-expmonth"
                    name="expMonth"
-                   value="" />
+                   value="" 
+                   maxlength="2"/><span id="errmsgMonth"></span>
         </div>
         <div>
             <label>Expiration Year:</label>
             <input class="form-control js-expyear"
                    name="expYear"
-                   value="" />
+                   value=""
+                   maxlength="4"/><span id="errmsgYear"></span>
         </div>
         <div>
             <label>Amount:</label>
             <input class="form-control js-amount"
                    name="amount"
-                   value="" />
+                   value="" /><span id="errmsgAmount"></span>
         </div>
         <hr />
         <button type="button" class="btn btn-primary js-pay-card">
@@ -42,3 +44,5 @@
     </form>
 
 </div>
+
+<button type="button" class="btn-primary js-back">Back to payment form</button>
