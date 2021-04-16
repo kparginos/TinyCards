@@ -2,7 +2,7 @@
 
 using TinyBank.Core.Services;
 using TinyBank.Core.Services.Options;
-using TinyBank.Web.Models;
+using TinyBank.Web.Extensions;
 
 namespace TinyBank.Web.Controllers
 {
@@ -23,10 +23,16 @@ namespace TinyBank.Web.Controllers
         }
 
         [HttpPost]
+        [Route("checkout")]
         public IActionResult Checkout([FromBody] SearchCardCheckoutOption options)
         {
-            //var result = _card.
-            return View();
+            var result = _card.Checkout(options);
+
+            if (!result.IsSuccessful()) {
+                return result.ToActionResult();
+            }
+
+            return Ok();
         }
 
         [HttpGet("{cardNumber}")]

@@ -105,7 +105,8 @@ $('.js-update-account-state').on('click',
             $('.js-result')
                 .append(`<div class="alert alert-success alert-dismissible show" role="alert" >
                               Account State updated successfully
-                              </button>
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
                             </div>`);
             $('.js-result').fadeOut(5000);
             //debugger;
@@ -135,7 +136,44 @@ $('.js-pay-card').on('click',
             Amount: parseFloat($('.js-amount').val())
         });
 
-        alert(data);
+        // lock the form
+        $('.js-card-form').prop("disabled", true);
 
         // ajax call
+        $.ajax({
+            url: '/card/checkout',
+            method: 'POST',
+            contentType: 'application/json',
+            data: data
+        }).done(response => {
+            // success
+            // show an alert
+            $('.js-card-form').toggle();
+            console.log("Payment Successfull");
+            $('.js-result').empty();
+            $('.js-result')
+                .append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+                              <h4 class="alert-heading">You payment was successfull!</h4>
+                              <hr>
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>`);
+        }).fail(failure => {
+            // failure
+            //debugger;
+            $('.js-card-form').toggle();
+            console.log('Payment failed');
+            console.log(failure.responseText);
+            $('.js-result').empty();
+            $('.js-result')
+                .append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                              <h4 class="alert-heading">Your payment failed!</h4>
+                              <hr>
+                              ${failure.status} - ${failure.responseText}
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>`);
+        });
     });

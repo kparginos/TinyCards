@@ -91,7 +91,7 @@ namespace TinyBank.Core.Implementation.Services
             if(card.Expiration.ToString("MMyyyy") != $"{options.ExpirationMonth.ToString("00")}{options.ExpirationYear.ToString("0000")}") {
                 return new ApiResult<Card>() {
                     Code = ApiResultCode.BadRequest,
-                    ErrorText = $"Card expiration {card.Expiration} not much request info"
+                    ErrorText = $"Expiration date {options.ExpirationMonth.ToString("00")}/{options.ExpirationYear.ToString("0000")} not much card expiration !"
                 };
             }
 
