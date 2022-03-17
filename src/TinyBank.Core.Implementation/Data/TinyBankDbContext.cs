@@ -11,6 +11,7 @@ namespace TinyBank.Core.Implementation.Data
     {
         public TinyBankDbContext(DbContextOptions options) : base(options)
         {
+            // Just some comments for GitHub testing
         }
 
         /// <summary>
